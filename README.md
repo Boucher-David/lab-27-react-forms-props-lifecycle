@@ -1,5 +1,6 @@
 401 JS --  Lab 27 Reddit Search Engine
 ===
+## Lab Description
 
 ## Submission Instructions
   * Work in a fork of this repository
