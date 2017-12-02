@@ -2,6 +2,8 @@
 ===
 ## Lab Description
 
+Simply enter your chosen subreddit and number of threads you would like to display. It displays an error message if you don't enter a subreddit, if you enter a number LT 1 or GT 100, and if superagent has an error for some reason.
+
 ## Submission Instructions
   * Work in a fork of this repository
   * Work in a branch on your fork

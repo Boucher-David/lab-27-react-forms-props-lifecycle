@@ -10,6 +10,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './style/main.scss';
+import superagent from 'superagent';
 import { say } from 'cowsay';
 
 const main = document.getElementById('main');
@@ -30,16 +31,25 @@ class App extends React.Component {
 class SearchForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {threads: [{name: 'Larry'},{name: 'David'},{name: 'Ellen'}]};
+        this.state = {};
     }
     captureInput = (event) => {
         let value = event.target.value;
-        (event.target.id === 'subredditInput') ? this.setState({subreddit: value}) : this.setState({results: value});
+        (event.target.id === 'subredditInput') ? this.setState({subreddit: value}) : this.setState({limit: value});
     }
     searchReddit = (event) => {
         event.preventDefault();
+        if ((this.state.limit < 1) || (this.state.limit > 100)) return this.setState({error: "Please enter a number of results between 1 and 101"});
+        if (this.state.subreddit === 'undefined') return this.setState({error: "Please enter a number of results between 1 and 101"});
 
-        
+        superagent.get(`https://www.reddit.com/r/${this.state.subreddit}.json?limit=${this.state.limit}`).then(results => {
+            this.setState({threads: results.body.data.children});
+
+        }).catch(err => this.setState({error: err.message}));
+    }
+
+    showError = () => {
+        if (this.state.error) return <div>{this.state.error}</div>
     }
     render () {
         return (
@@ -48,8 +58,9 @@ class SearchForm extends React.Component {
                 <input id="subredditInput" value={this.state.subreddit} onChange={this.captureInput}></input> 
                 <br />
                 <p>Number of Results</p>
-                <input id="numberInput" value={this.state.results} onChange={this.captureInput}></input>
+                <input id="numberInput" value={this.state.limit} onChange={this.captureInput}></input>
                 <br />
+                {this.showError()}
                 <input type="submit" value="Search Reddit for Subreddit." onClick={this.searchReddit}></input>
                 <br />
                 <SearchResultList threads={this.state.threads}/>    
@@ -63,17 +74,26 @@ class SearchResultList extends React.Component {
         super(props);
     }
     renderThreads = (props) => {
-        // need to re-write this to work with actual reddit data. no clue how to get around CORS issue
-        return props.threads.map(thread => {
-            return <li key={thread.name}>{thread.name}</li>
-        });
+        if (props.threads) return props.threads.map(thread => {
+            return (
+                <ul key={thread.data.title}>
+                    <li>
+                        <a href={thread.data.title}>
+                            <h3>{thread.data.title}</h3>
+                            <p>Ups: {thread.data.ups}</p>
+                        </a>
+                    </li>
+                </ul>
+            )
+         });
     };
 
     render () {
         return (
-            <ul>
+            <div>
+                {(this.props.threads) ? <p>A List of reddit threads within your chosen subreddit.</p> : null}
                 {this.renderThreads(this.props)}
-            </ul>
+            </div>
         )
     }
 }

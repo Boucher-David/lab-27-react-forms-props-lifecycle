@@ -1,7 +1,7 @@
 {
-  "name": "lab-26-david",
+  "name": "lab-27-david",
   "version": "1.0.0",
-  "description": "401 JS --  Lab 26 Cowsay ===",
+  "description": "401 JS --  Lab 27",
   "main": "index.js",
   "scripts": {
     "watch": "webpack-dev-server --inline --hot",
@@ -33,6 +33,7 @@
     "react-dom": "^16.2.0",
     "resolve-url-loader": "^2.2.0",
     "sass-loader": "^6.0.6",
+    "superagent": "^3.8.1",
     "webpack": "^3.8.1",
     "webpack-dev-server": "^2.9.5"
   }
